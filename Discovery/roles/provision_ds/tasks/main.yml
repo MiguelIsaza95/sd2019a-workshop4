@@ -33,4 +33,8 @@
           - chown -R consul:consul /etc/consul.d
   sudo: yes
 
-- name: 
+- name: Consul
+  command: consul agent -server -bootstrap-expect=1 \ -data-dir=/etc/consul/data -node=agent-server -bind=192.168.56.102 \ -enable-script-checks=true -config-dir=/etc/consul.d -client 0.0.0.0 
+  become: yes
+  become_user: consul
+  become_method: sudo
