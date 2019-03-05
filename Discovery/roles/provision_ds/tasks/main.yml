@@ -1,0 +1,36 @@
+---
+- name: Install dependencies
+  yum: name={{ item }} update_cache=true state=installed
+  with_items:
+          - wget
+          - unziip
+          - curl
+  tags: packages
+
+- name: Unzip Package
+  unarchive:
+          src: https://releases.hashicorp.com/consul-template/0.19.4/consul-template_0.19.4_linux_amd64.zip
+          dest: /tmp
+
+- name: Move the package
+  command: mv tmp/consul-template /usr/bin
+  sudo: yes
+
+- name: Create a directory
+  command: mkdir /etc/consul-template
+  sudo: yes
+
+- name: Create other directory
+  command: mkdir -p /etc/consul/data
+  sudo: yes
+
+- name: Creating an user
+  command: "{{ item }}"
+  with_items:
+          - adduser consul
+          - passwd consul
+          - chown -R consul:consul /etc/consul
+          - chown -R consul:consul /etc/consul.d
+  sudo: yes
+
+- name: 

@@ -1,0 +1,9 @@
+---
+- name: Discovery Service
+  hosts: discovery_service
+  become: yes
+  become_user: root
+  become_method: sudo
+
+  roles:
+          - provision_ds
