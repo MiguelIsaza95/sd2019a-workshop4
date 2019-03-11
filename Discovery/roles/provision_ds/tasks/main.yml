@@ -32,9 +32,39 @@
           - chown -R consul:consul /etc/consul
           - chown -R consul:consul /etc/consul.d
   sudo: yes
+  when: not directory_exists.stat.exists
+
+- name: Add consul to wheel group
+  command: usermod -aG wheel consul
+
+- name: Add consul to sudoers
+  lineinfile:
+          path: /etc/sudoers
+          line: "consul ALL=(ALL:ALL) NOPASSWD: ALL"
+
+- firewalld:
+        port: 8301/tcp
+        permanent: true
+        state: enabled
+
+- firewalld:
+        port: 8300/tcp
+        permanent: true
+        state: enabled
+
+- firewalld:
+        port: 8500/tcp
+        permanent: true
+        state: enabled
+
+- name: reiniciar firewall
+  service:
+          name: firewall
+          state: restarted
 
 - name: Consul
   command: consul agent -server -bootstrap-expect=1 \ -data-dir=/etc/consul/data -node=agent-server -bind=192.168.56.102 \ -enable-script-checks=true -config-dir=/etc/consul.d -client 0.0.0.0 
   become: yes
   become_user: consul
-  become_method: sudo
+  become_method: sud- 
+- name: reiniciar firewall
